@@ -25,6 +25,8 @@ const contact = fs.readFileSync(__dirname + "/public/contact/contact.html", "utf
 const about = fs.readFileSync(__dirname + "/public/about/about.html", "utf-8");
 const recipes = fs.readFileSync(__dirname + "/public/recipes/recipes.html", "utf-8");
 const login = fs.readFileSync(__dirname + "/public/login/login.html", "utf-8");
+const createpost = fs.readFileSync(__dirname + "/public/createPost/createpost.html", "utf-8");
+
 
 
 // ------------------------------------------
@@ -58,9 +60,23 @@ app.get("/recipes", (req, res) => {
 });
 
 
+app.get('/createpost',(req,res) => {
+    if(req.session.loggedin) {
+        res.send(createpost);
+    } else {
+        res.redirect('/about');
+    }
+});
+/*
+app.get('/createpost',(req,res) => {
+    if(req.session.loggedin) {
+        res.sendFile(path.join(__dirname + '/frontend/activity.html'));
+    } else {
+        res.redirect('/');
+    }
+});
 
-
-
+*/
 
 app.post('/auth', (req, res) => {
     const email = req.body.email;
@@ -70,7 +86,7 @@ app.post('/auth', (req, res) => {
             if (results.length > 0) {
                 req.session.loggedin = true;
                 req.session.email = email;
-                res.redirect('/frontpage');
+                res.redirect('/');
             } else {
                 res.redirect('/');
                 res.end();
