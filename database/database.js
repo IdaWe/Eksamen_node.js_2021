@@ -11,7 +11,7 @@ const connection = mysql.createConnection({
     database: process.env.DATABASE
 });
 
-/*
+
 connection.connect((error) => {
     if (error) {
         console.log("Error: " + error);
@@ -19,7 +19,7 @@ connection.connect((error) => {
     else {
         console.log('Database connected successfully...');
     }
-});*/
+});
 
 // eksportere variablen connection så den kan bruges i andre filer hvor den bliver importeret med require
 module.exports = {

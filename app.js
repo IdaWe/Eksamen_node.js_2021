@@ -1,37 +1,64 @@
 const express = require("express");
 const database = require("./database/database.js");
-//const fs = require("fs");
-
-
+const bcrypt = require('bcrypt');
+const bodyParser = require('body-parser');
+const session = require('express-session');
 
 const app = express();
 
 app.use(express.static("public"));
-
-const bcrypt = require('bcrypt');
-
-const bodyParser = require('body-parser');
 //app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const session = require('express-session');
 
+const recipesRouter = require("./routes/recipes.js");
+const contactRouter = require("./routes/contact.js");
+app.use(recipesRouter.router);
+app.use(contactRouter.router);
+
+const fs = require("fs");
+
+const header = fs.readFileSync(__dirname + "/public/header/header.html", "utf-8");
+const footer = fs.readFileSync(__dirname + "/public/footer/footer.html", "utf-8");
+const frontpage = fs.readFileSync(__dirname + "/public/frontpage/index.html", "utf-8");
+const contact = fs.readFileSync(__dirname + "/public/contact/contact.html", "utf-8");
+const about = fs.readFileSync(__dirname + "/public/about/about.html", "utf-8");
+const recipes = fs.readFileSync(__dirname + "/public/recipes/recipes.html", "utf-8");
+const login = fs.readFileSync(__dirname + "/public/login/login.html", "utf-8");
+
+
+// ------------------------------------------
 app.use(session({
     secret: 'secret',
     resave: true,
     saveUninitialized: true
 }));
+
 // ------------------------------------------
 
 
-
 app.get("/login", (req, res) => {
-    res.sendFile(__dirname + "/public/login/login.html")
+    res.send(login)
 })
 
-app.get("/frontpage", (req, res) => {
-    res.sendFile(__dirname + "/public/frontpage/frontpage.html")
+app.get("/", (req, res) => {
+    res.send(header + frontpage + footer)
 })
+
+app.get("/about", (req, res) => {
+    res.send(header + about + footer);
+});
+
+app.get("/contact", (req, res) => {
+    res.send(header + contact + footer);
+});
+
+app.get("/recipes", (req, res) => {
+    res.send(header + recipes + footer);
+});
+
+
+
 
 
 
@@ -55,7 +82,7 @@ app.post('/auth', (req, res) => {
     }
 });
 
-
+/*
 
 app.get('/logout',(req,res) => {
     req.session.destroy((err) => {
@@ -84,7 +111,7 @@ app.post('/register',  (req, res) => {
             confirmationMail(email);}
     });
 });
-
+*/
 
 //-----------------------------------------------
 
