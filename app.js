@@ -2,15 +2,25 @@ const express = require("express");
 const database = require("./database/database.js");
 //const fs = require("fs");
 
+
+
 const app = express();
 
 app.use(express.static("public"));
 
 const bcrypt = require('bcrypt');
 
+const bodyParser = require('body-parser');
+//app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+const session = require('express-session');
 
-
+app.use(session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
+}));
 // ------------------------------------------
 
 
@@ -25,13 +35,11 @@ app.get("/frontpage", (req, res) => {
 
 
 
-
-
 app.post('/auth', (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
     if (email && password) {
-        connection.query('SELECT * FROM users WHERE email = ? AND password = ?', [email, password], (error, results, fields) => {
+        database.connection.query('SELECT * FROM users WHERE email = ? AND password = ?', [email, password], (error, results, fields) => {
             if (results.length > 0) {
                 req.session.loggedin = true;
                 req.session.email = email;
